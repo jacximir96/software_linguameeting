@@ -60,6 +60,19 @@
 <div class="row margin-top-10">
 
     <div class="col-md-12">
+            <div class="text-left">
+                @if(session('success'))
+                    <div id="successMessage" class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if(session('error'))
+                    <div id="errorMessage" class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
+            </div>
 
             <div class="text-right  float-end">
                 <div class="input-group rounded">
@@ -69,7 +82,6 @@
                     </span>
                 </div>
             </div>
-
     </div>
 
 </div>
@@ -244,29 +256,41 @@
         <div class="modal-content">
             <form method="POST" action="{{route('post.admin.course.coaching_form.close.course', $section->course->id)}}" enctype="multipart/form-data">
             @csrf
-                <div class="modal-header">
+                <div class="modal-body">
                     <h4 class="modal-tittle" style="color:white;"><span class="title-form">CLOSE COURSE</span></h4>
-                    </br>
-                    <p>Now that your course has end, it would be move to Past Courses.</p>
+                    <p>Now that your course has ended, it will be moved to Past Courses.</p>
                 </div>
 
-                <div class="modal-footer d-flex">
-                    <div>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
-                            <i class="fa fa-undo" style="font-size:15px;"></i>&nbsp;&nbsp;&nbsp;Cancel
-                        </button>
-                    </div>
-
-                    <div>
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-save" style="font-size:15px;"></i>&nbsp;&nbsp;&nbsp;OK
-                        </button>
-                    </div>
+                <div style="padding: 0px 15px 10px 15px; display: flex; justify-content: space-between;">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal" id="cancelButton">Cancel</button>
+                    <button type="submit" class="btn btn-sm bg-text-corporate-color" style="color:white">OK</button>  
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("cancelButton").addEventListener("click", function() {
+            document.querySelector('.form-select').value = '';
+        });
+    });
+
+    setTimeout(function() {
+        var successMessage = document.getElementById('successMessage');
+        if (successMessage) {
+            successMessage.style.display = 'none';
+        }
+    }, 3000);
+    setTimeout(function() {
+        var errorMessage = document.getElementById('errorMessage');
+        if (errorMessage) {
+            errorMessage.style.display = 'none';
+        }
+    }, 3000);
+</script>
 
 <script>
 function changeFunc(id){

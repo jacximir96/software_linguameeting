@@ -43,7 +43,19 @@ class ActiveCourseController extends Controller
         $today_uni->modify("-1 day");
         $dayBefore = $today_uni->format('Y-m-d');
 
-        /* MEJORAR LUEGO */
-        $affectedRows = CourseModel::where("id", $course_id)->update(["closed_date" => $dayBefore]);
+        try {
+            /* MEJORAR LUEGO */
+            $affectedRows = CourseModel::where("id", $course_id)->update(["closed_date" => $dayBefore]);
+
+            if ($affectedRows === 0) {
+                throw new \Exception("Error updating course data.");
+            }
+
+            return redirect()->back()->with('success', 'Course closed successfully.');
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+
     }
 }

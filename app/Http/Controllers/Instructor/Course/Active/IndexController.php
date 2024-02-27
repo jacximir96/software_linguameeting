@@ -47,7 +47,7 @@ class IndexController extends Controller
             //dd($section->course->isActive());
         }
 
-        dd($arrayPrueba);
+        // dd($arrayPrueba);
 
         view()->share([
             'checkerRole' => $this->checkerRole,
