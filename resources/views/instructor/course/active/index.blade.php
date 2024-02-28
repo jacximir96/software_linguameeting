@@ -145,8 +145,8 @@
                     </td>
                     <td>{{$section->instructor->writeFullName()}}</td>
                     <td>
-                        <select class="form-select form-select-sm" aria-label=".form-select-sm example" onchange="changeFunc(this.value);">
-                            <option value="">Actions </option>
+                        <select class="form-select form-select-sm select-close-course" aria-label=".form-select-sm example" onchange="changeFunc(this.value);">
+                            <option value="">Actions</option>
                             <option value="{{route('get.instructor.course.show', $section->course_id)}}">See course information</option>
                             <option value="{{route('get.common.course.section.file.instructions.download', $section->id)}}">Download Instructions</option>
                             <option value="{{route('get.admin.course.coaching_form.course_assignment', $section->course->id)}}?sectionToExpand={{$section->id}}">
@@ -157,7 +157,7 @@
                             <option value="{{route('get.admin.course.coaching_form.update.course_information', $section->course->id)}}">
                                 Edit Coaching Form
                             </option>
-                            <option value="modalCloseCourse">Close course</option>
+                            <option value="modalCloseCourse" data-idSection={{$section->course_id}}>Close course</option>
                             <option value="modalDuplicateCourse">Duplicate Coaching Form</option>
                         </select>
 
@@ -235,7 +235,7 @@
 
                 <div class="modal-footer d-flex">
                     <div>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="cancelDuplicate">
                             <i class="fa fa-undo" style="font-size:15px;"></i>&nbsp;&nbsp;&nbsp;Cancel
                         </button>
                     </div>
@@ -254,8 +254,9 @@
 <div class="modal fade bd-example-modal-lg" id="modalCloseCourse" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-md" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-content">
-            <form method="POST" action="{{route('post.admin.course.coaching_form.close.course', $section->course->id)}}" enctype="multipart/form-data">
+            <form method="POST" action="{{route('post.admin.course.coaching_form.close.course', 1)}}" enctype="multipart/form-data">
             @csrf
+            <input type="text" name="idSection" id="idSection" hidden>
                 <div class="modal-body">
                     <h4 class="modal-tittle" style="color:white;"><span class="title-form">CLOSE COURSE</span></h4>
                     <p>Now that your course has ended, it will be moved to Past Courses.</p>
@@ -274,9 +275,19 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("cancelButton").addEventListener("click", function() {
-            document.querySelector('.form-select').value = '';
+            var selects = document.querySelectorAll('.form-select');
+            selects.forEach(function(select) {
+                select.value = '';
+            });
+        });
+        document.getElementById("cancelDuplicate").addEventListener("click", function() {
+            var selects = document.querySelectorAll('.form-select');
+            selects.forEach(function(select) {
+                select.value = '';
+            });
         });
     });
+
 
     setTimeout(function() {
         var successMessage = document.getElementById('successMessage');
@@ -298,6 +309,8 @@ function changeFunc(id){
         $("#modalDuplicateCourse").modal('show');
     }
     else if (id == "modalCloseCourse") {
+        var idSectionValue = $("option[value='modalCloseCourse']:selected").data("idsection");
+        $("#idSection").val(idSectionValue);
         $("#modalCloseCourse").modal('show');
     }
     else {

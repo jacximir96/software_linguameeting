@@ -44,16 +44,24 @@
                     </div>
 
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton1" >
-                        <div class="dropdown-item cursor_pointer" href="{{route('get.admin.course.coaching_form.update.course_information', $course->id)}}">
-                            Edit Coaching Form
+                        
+                        <div class="dropdown-item cursor_pointer">See course Instructions</div>
+                        
+                        <div class="dropdown-item cursor_pointer" href="{{route('get.common.course.section.file.instructions.download', $course->id)}}">
+                            Download Instructions
                         </div>
-                        <div class="dropdown-item cursor_pointer">See Instructions</div>
-                        <div class="dropdown-item cursor_pointer">Add make-up session to all students</div>
-                        <div class="dropdown-item cursor_pointer">Duplicate</div>                    
-                        <div class="dropdown-item cursor_pointer">Send course to Past Courses</div>
+
                         <a class="dropdown-item cursor_pointer" href="{{route('get.admin.course.coaching_form.course_assignment', $course->id)}}">
                             Add Conversation Guides
                         </a>
+                        <div class="dropdown-item cursor_pointer">Add make-up session to all</div>
+                        
+                        <div class="dropdown-item cursor_pointer">Download attendance report</div>
+                        <div class="dropdown-item cursor_pointer" href="{{route('get.admin.course.coaching_form.update.course_information', $course->id)}}">
+                            Edit Coaching Form
+                        </div>
+                        <div class="dropdown-item cursor_pointer">Close course</div>
+                        <div class="dropdown-item cursor_pointer">Duplicate Coaching Form</div>   
                     </div>
 
                 </div>

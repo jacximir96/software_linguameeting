@@ -12,42 +12,40 @@ use App\Http\Models\CourseModel;
 use App\Http\Models\UniversityModel;
 use App\Http\Models\TimezoneModel;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class ActiveCourseController extends Controller
 {
     use Breadcrumable;
 
-    public function closeCourse($id) {
+    public function closeCourse(Request $request, $id) {
 
-        $course_id = intval($id);
+        $course_id = intval($request->idSection);
+        // $course_id = intval($id);
         $close = true;
         $send = "";
 
-        $course = CourseModel::select('id','university_id','is_flex','closed_date')->where('id','=',$course_id)->first();
-
-        // Buscar zona horaria de la universidad y ver que no hay estudiantes con sesiones futuras o pasadas. 
-        // Comparar con zona horaria estudiante.
-        $university = UniversityModel::select('university.id','timezone.name')
-                      ->leftJoin('timezone','university.timezone_id','=','timezone.id')
-                      ->where('university.id','=',$course->university_id)
-                      ->get();
-
-        $today_uni = Carbon::now()->setTimezone($university[0]->name);
-
-/*         if (empty($course->is_flex)) {
-            dd("vacio");
-        } else {
-            dd("no vacio");
-        } */
-
-        $today_uni->modify("-1 day");
-        $dayBefore = $today_uni->format('Y-m-d');
-
         try {
+
+            $course = CourseModel::select('id','university_id','is_flex','closed_date')->where('id','=',$course_id)->first();
+        
+            // Buscar zona horaria de la universidad y ver que no hay estudiantes con sesiones futuras o pasadas. 
+            // Comparar con zona horaria estudiante.
+            $university = UniversityModel::select('university.id','timezone.name')
+                        ->leftJoin('timezone','university.timezone_id','=','timezone.id')
+                        ->where('university.id','=',$course->university_id)
+                        ->get();
+
+            $today_uni = Carbon::now()->setTimezone($university[0]->name);
+
+
+            $today_uni->modify("-1 day");
+            $dayBefore = $today_uni->format('Y-m-d');
+            
             /* MEJORAR LUEGO */
             $affectedRows = CourseModel::where("id", $course_id)->update(["closed_date" => $dayBefore]);
 
-            if ($affectedRows === 0) {
+            if ($affectedRows === 0 || $course === null) {
                 throw new \Exception("Error updating course data.");
             }
 

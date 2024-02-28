@@ -27,7 +27,7 @@
             </form>
             @foreach ($courses as $course)
                 <form method="GET">
-                    <button type="submit" class="dropdown-item cursor_pointer" name="course" value="{{ $course->course_id }}">{{ $course->name }}</button>
+                    <button type="submit" class="dropdown-item cursor_pointer" name="course" value="{{ $course->id }}">{{ $course->name }}</button>
                 </form>
             @endforeach
         </div>        
@@ -226,12 +226,11 @@
     
                         </div>
                         [s//if/s]
-    
                     </div>
-    
                 </div>
+
             </div>
-    </div>
+        </div>
     @endforeach
 
 </div>

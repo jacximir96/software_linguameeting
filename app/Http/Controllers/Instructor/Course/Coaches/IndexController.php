@@ -23,48 +23,51 @@ class IndexController extends Controller
 
         if($request->has('course')){
             if($request->course === 'all'){
-                $coaches = DB::table('user')
-                ->join('coach_coordinator', 'user.id', '=', 'coach_coordinator.coach_id')
+                $coaches = DB::table('coach_info')
+                ->join('session', 'coach_info.user_id', '=', 'session.coach_id')
+                ->join('section', 'session.course_id', '=', 'section.course_id')
+                ->join('user','coach_info.user_id','=','user.id')
                 ->join('country','user.country_id','=','country.id')
-                ->join('coach_info', 'user.id', '=', 'coach_info.user_id')
                 ->select('user.id', 'user.name', 'user.lastname', 'user.url_photo', 'country.name as countryName', 'country.iso2 as flag', 'coach_info.url_video as video', 'coach_info.description as description')
-                ->where('coach_coordinator.coordinator_id', $userId)
+                ->where('section.instructor_id', '=', $userId)
+                ->distinct()
                 ->get();
-            }
-            else{
-                $coaches = DB::table('user')
-                ->join('coach_coordinator', 'user.id', '=', 'coach_coordinator.coach_id')
+                
+            }else{
+                $coaches = DB::table('coach_info')
+                ->join('session', 'coach_info.user_id', '=', 'session.coach_id')
+                ->join('section', 'session.course_id', '=', 'section.course_id')
+                ->join('user','coach_info.user_id','=','user.id')
                 ->join('country','user.country_id','=','country.id')
-                ->join('coach_info', 'user.id', '=', 'coach_info.user_id')
-                ->join('course_coach', 'user.id', '=', 'course_coach.coach_id')
-                ->select('user.id', 'user.name', 'user.lastname', 'user.url_photo', 'country.name as countryName', 'country.iso2 as flag', 'coach_info.url_video as video', 'coach_info.description as description', 'course_coach.course_id')
-                ->where('coach_coordinator.coordinator_id', $userId)
-                ->where('course_coach.course_id', $request->course)
+                ->select('user.id', 'user.name', 'user.lastname', 'user.url_photo', 'country.name as countryName', 'country.iso2 as flag', 'coach_info.url_video as video', 'coach_info.description as description')
+                ->where('section.instructor_id', '=', $userId)
+                ->where('section.course_id', '=', $request->course)
+                ->distinct()
                 ->get();
             }
             
-        }
-        else{
-            $coaches = DB::table('user')
-            ->join('coach_coordinator', 'user.id', '=', 'coach_coordinator.coach_id')
+        }else{
+            $coaches = DB::table('coach_info')
+            ->join('session', 'coach_info.user_id', '=', 'session.coach_id')
+            ->join('section', 'session.course_id', '=', 'section.course_id')
+            ->join('user','coach_info.user_id','=','user.id')
             ->join('country','user.country_id','=','country.id')
-            ->join('coach_info', 'user.id', '=', 'coach_info.user_id')
             ->select('user.id', 'user.name', 'user.lastname', 'user.url_photo', 'country.name as countryName', 'country.iso2 as flag', 'coach_info.url_video as video', 'coach_info.description as description')
-            ->where('coach_coordinator.coordinator_id', $userId)
-            ->get(); 
+            ->where('section.instructor_id', '=', $userId)
+            ->distinct()
+            ->get();
         }
-        
-        $courses = DB::table('user')
-        ->join('coach_coordinator', 'user.id', '=', 'coach_coordinator.coach_id')
-        ->join('course_coach', 'user.id', '=', 'course_coach.coach_id')
-        ->join('course', 'course_coach.course_id', '=', 'course.id')
-        ->select('course_coach.course_id', 'course.name')
-        ->distinct()
-        ->where('coach_coordinator.coordinator_id', $userId)
-        ->where('course.end_date', '>=', now())
-        ->get();
-        
 
+        $courses = DB::table('coach_info')
+            ->join('session', 'coach_info.user_id', '=', 'session.coach_id')
+            ->join('section', 'session.course_id', '=', 'section.course_id')
+            ->join('user','coach_info.user_id','=','user.id')
+            ->join('course','section.course_id','=','course.id')
+            ->select('course.*')
+            ->where('section.instructor_id', '=', $userId)
+            ->distinct()
+            ->get();
+        
         $breadcrumb = new IndexBreadcrumb();
         $this->buildBreadcrumbInstanceAndSendToView($breadcrumb);
 
