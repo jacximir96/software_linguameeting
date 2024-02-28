@@ -195,8 +195,8 @@
                             <div class="col-sm-6">
                                 <label for="term_activeCourse">Term</label>
                                 <select class="form-control" name="term_activeCourse" id="term_activeCourse"
-                                style="text-transform: uppercase;">
-                                    <option value="" selected>Select semester</option>
+                                style="text-transform: uppercase;" required>
+                                    <option value="" selected disabled>Select semester</option>
                                     @foreach($semesters as $semester)
                                     <option value="{{$semester->id}}">{{$semester->name}}</option>
                                     @endforeach
@@ -206,8 +206,8 @@
                             <div class="col-sm-6">
                                 <label for="year_activeCourse">Year</label>
                                 <select class="form-control" name="year_activeCourse" id="year_activeCourse"
-                                style="text-transform: uppercase;">
-                                    <option value="" selected>Select year</option>
+                                style="text-transform: uppercase;" required>
+                                    <option value="" selected disabled>Select year</option>
                                     @foreach($arrayYears as $arrayYear)
                                     <option value="{{$arrayYear}}">{{$arrayYear}}</option>
                                     @endforeach
