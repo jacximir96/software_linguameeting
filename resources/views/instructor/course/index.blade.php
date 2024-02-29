@@ -5,7 +5,19 @@
 @if ( count($data->courses())>0)
 
 <div class="row">
-    
+    <div class="text-left">
+        @if(session('success'))
+            <div id="successMessage" class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div id="errorMessage" class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+    </div>
     <div class="col-md-6">
         <span class="text-corporate-dark-color box_sessions_tag"><strong>Active Courses </strong></span> Summer,2023
     </div>
@@ -60,8 +72,8 @@
                         <div class="dropdown-item cursor_pointer" href="{{route('get.admin.course.coaching_form.update.course_information', $course->id)}}">
                             Edit Coaching Form
                         </div>
-                        <div class="dropdown-item cursor_pointer">Close course</div>
-                        <div class="dropdown-item cursor_pointer">Duplicate Coaching Form</div>   
+                        <div class="dropdown-item cursor_pointer close-course-btn" data-id="{{$course->id}}">Close course</div>
+                        <div class="dropdown-item cursor_pointer duplicate-course-btn">Duplicate Coaching Form</div>   
                     </div>
 
                 </div>
@@ -138,5 +150,133 @@
 
 </div>
 
+<div class="modal fade bd-example-modal-lg" id="modalDuplicateCourse" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-md" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-content">
+            <form method="POST" action="{{route('get.admin.course.coaching_form.update.course_information', $course->id)}}" enctype="multipart/form-data">
+            @csrf
+                <div class="modal-header">
+                    <h4 class="modal-tittle" style="color:white;"><span class="title-form">DUPLICATE COURSE</span></h4>
+                </div>
+
+                <div class="modal-body" id="modal-container">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label for="term_activeCourse">Term</label>
+                                <select class="form-control" name="term_activeCourse" id="term_activeCourse"
+                                style="text-transform: uppercase;" required>
+                                    <option value="" selected disabled>Select semester</option>
+                                    @foreach($semesters as $semester)
+                                    <option value="{{$semester->id}}">{{$semester->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="year_activeCourse">Year</label>
+                                <select class="form-control" name="year_activeCourse" id="year_activeCourse"
+                                style="text-transform: uppercase;" required>
+                                    <option value="" selected disabled>Select year</option>
+                                    @foreach($arrayYears as $arrayYear)
+                                    <option value="{{$arrayYear}}">{{$arrayYear}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label for="startDate_activeCourse">Academic Course Start Date</label>
+                                <input type="date" class="form-control" name="startDate_activeCourse" id="startDate_activeCourse"
+                                style="text-transform: uppercase;" required>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label for="endDate_activeCourse">Academic Course End Date</label>
+                                <input type="date" class="form-control" name="endDate_activeCourse" id="endDate_activeCourse"
+                                style="text-transform: uppercase;" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer d-flex">
+                    <div>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="cancelDuplicate">
+                            <i class="fa fa-undo" style="font-size:15px;"></i>&nbsp;&nbsp;&nbsp;Cancel
+                        </button>
+                    </div>
+
+                    <div>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save" style="font-size:15px;"></i>&nbsp;&nbsp;&nbsp;Duplicate
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <div class="modal fade bd-example-modal-lg" id="modalCloseCourse" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-md" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-content">
+                <form method="POST" action="{{route('post.admin.course.coaching_form.close.course', 1)}}" enctype="multipart/form-data">
+                @csrf
+                <input type="text" name="idSection" id="idSection" hidden>
+                    <div class="modal-body">
+                        <h4 class="modal-tittle" style="color:white;"><span class="title-form">CLOSE COURSE</span></h4>
+                        <p>Now that your course has ended, it will be moved to Past Courses.</p>
+                    </div>
+
+                    <div style="padding: 0px 15px 10px 15px; display: flex; justify-content: space-between;">
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal" id="cancelButton">Cancel</button>
+                        <button type="submit" class="btn btn-sm bg-text-corporate-color" style="color:white">OK</button>  
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+    setTimeout(function() {
+        var successMessage = document.getElementById('successMessage');
+        if (successMessage) {
+            successMessage.style.display = 'none';
+        }
+    }, 3000);
+    setTimeout(function() {
+        var errorMessage = document.getElementById('errorMessage');
+        if (errorMessage) {
+            errorMessage.style.display = 'none';
+        }
+    }, 3000);
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var closeCourseBtns = document.querySelectorAll(".close-course-btn");
+        closeCourseBtns.forEach(function(btn) {
+            btn.addEventListener("click", function() {
+                var courseId = btn.getAttribute("data-id");
+                document.getElementById("idSection").value = courseId;
+                $('#modalCloseCourse').modal('show');
+            });
+        });
+
+        var duplicateCourseBtns = document.querySelectorAll(".duplicate-course-btn");
+        duplicateCourseBtns.forEach(function(btn) {
+            btn.addEventListener("click", function() {
+                $('#modalDuplicateCourse').modal('show');
+            });
+        });
+    });
+
+    
+</script>
 
 @endsection
