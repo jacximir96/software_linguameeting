@@ -21,9 +21,7 @@ class IndexController extends Controller
     public function __invoke(Request $request)
 {
     $instructor = user()->id;
-    $instructor = 123357;
-    // $instructor = 123353;
-
+    
     $courses = DB::table('section')
         ->join('session', 'section.course_id', '=', 'session.course_id')
         ->select('session.day', 'session.start_time', 'session.end_time')
