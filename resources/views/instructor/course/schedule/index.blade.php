@@ -8,8 +8,10 @@
 
     <div class="row">
         <div class="col-12">
+            <div style="height: 15px"></div>
             <div class="col-md-6">
 
+                
                 <div class="cursor_pointer custom-color-background-instructor padding-5" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         
                     <span class="text-corporate-dark-color align-svg">
@@ -17,16 +19,16 @@
         
                     </span>
         
-                    <span class="box_sessions_tag"><strong> All Section</strong></span> 
+                    <span class="box_sessions_tag"><strong> All Courses</strong></span> 
                 </div>
         
                 <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton1">
                     <form method="GET">
-                        <button type="submit" class="dropdown-item cursor_pointer" name="section" value="all">All Section</button>
+                        <button type="submit" class="dropdown-item cursor_pointer" name="course" value="all">All Courses</button>
                     </form>
-                    @foreach ($sections as $section)
+                    @foreach ($courses as $course)
                         <form method="GET">
-                            <button type="submit" class="dropdown-item cursor_pointer" name="section" value="{{ $section->id }}">{{ $section->name }}</button>
+                            <button type="submit" class="dropdown-item cursor_pointer" name="course" value="{{ $course->id }}">{{ $course->name }}</button>
                         </form>
                     @endforeach
                 </div>        
@@ -94,3 +96,4 @@
     @include('instructor.course.schedule.javascript')
     
 @endsection
+

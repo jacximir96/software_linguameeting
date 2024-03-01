@@ -55,9 +55,30 @@ class IndexController extends Controller
         ->where('section.instructor_id', $instructor)
         ->get();
     
+    $courses = DB::table('coach_info')
+        ->join('session', 'coach_info.user_id', '=', 'session.coach_id')
+        ->join('section', 'session.course_id', '=', 'section.course_id')
+        ->join('user','coach_info.user_id','=','user.id')
+        ->join('course','section.course_id','=','course.id')
+        ->select('course.*')
+        ->where('section.instructor_id', '=', $instructor)
+        ->distinct()
+        ->get(); 
+          
+    $coaches = DB::table('coach_info')
+        ->join('session', 'coach_info.user_id', '=', 'session.coach_id')
+        ->join('section', 'session.course_id', '=', 'section.course_id')
+        ->join('user','coach_info.user_id','=','user.id')
+        ->join('country','user.country_id','=','country.id')
+        ->select('user.id', 'user.name', 'user.lastname', 'user.url_photo', 'country.name as countryName', 'country.iso2 as flag', 'coach_info.url_video as video', 'coach_info.description as description')
+        ->where('section.instructor_id', '=', $instructor)
+        ->distinct()
+        ->get();        
+    
+
     $breadcrumb = new IndexBreadcrumb();
     $this->buildBreadcrumbInstanceAndSendToView($breadcrumb);   
-    return view('instructor.course.schedule.index', compact('days', 'sections', 'startOfWeek'));
+    return view('instructor.course.schedule.index', compact('days', 'courses', 'startOfWeek', 'coaches'));
 }
 
 }
