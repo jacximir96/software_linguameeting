@@ -72,7 +72,7 @@ Route::prefix('course')->group(function () {
 
 
     Route::prefix('schedule')->group(function () {
-        Route::get('', \App\Http\Controllers\Instructor\Course\Schedule\IndexController::class)->name('get.instructor.course.schedule.index');
+        Route::get('/{direction?}', \App\Http\Controllers\Instructor\Course\Schedule\IndexController::class)->name('get.instructor.course.schedule.index');
 
     });
 

@@ -7,17 +7,17 @@
             <div class="card-body padding-05-rem">
                 <div class="row">
                     <div class="col-6 text-center">
-                        
+                        <a href="{{ route('get.instructor.course.schedule.index', ['direction' => 'back']) }}">
                             <i class="fa fa-arrow-left fa-2x text-muted"></i>
-
+                        </a>
                     </div>
                     <div class="col-6 text-center">
-
+                        <a href="{{ route('get.instructor.course.schedule.index', ['direction' => 'next']) }}">
                             <i class="fa fa-arrow-right fa-2x text-muted"></i>
-
+                        </a>
                     </div>
                 </div>
-            </div>
+            </div>          
         </div>
     </div>
 </div>
